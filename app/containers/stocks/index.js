@@ -122,6 +122,8 @@ class Stocks extends Component {
         <ScrollView style={styles.container}>
           { this.renderStocks() }
         </ScrollView>
+
+        <Background backgroundStyles={ styles.backgroundStyle } />
       </View>
       );
   }
