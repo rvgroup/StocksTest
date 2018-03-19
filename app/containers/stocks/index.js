@@ -23,6 +23,7 @@ class Stocks extends Component {
   }
 
   componentDidMount() {
+    DeviceEventEmitter.addListener('stocksBeforeLoad', this.onStocksBeforeLoad.bind(this));
     DeviceEventEmitter.addListener('stocksChanged', this.onStocksChange.bind(this));
 
     this.props.screenProps.actions.startAutoRefresh();
@@ -31,24 +32,22 @@ class Stocks extends Component {
   }
 
   componentWillUnmount() {
+      DeviceEventEmitter.removeListener('stocksBeforeLoad', this.onStocksBeforeLoad.bind(this));
       DeviceEventEmitter.removeListener('stocksChanged', this.onStocksChange.bind(this));
+
+      this.props.screenProps.actions.stopAutoRefresh();
+  }
+
+  onStocksBeforeLoad() {
+    this.setState({refreshing: true});
   }
 
   onStocksChange() {
-    let stocks = this.props.screenProps.stocks.stocks;
-    this.setState({stocks: stocks});
+    this.setState({ refreshing: false, stocks: this.props.screenProps.stocks.data });
   }
 
   onRefresh() {
-    this.setState({refreshing: true});
-
-    let self = this;
-
-    this.props.screenProps.actions.getStocks(
-      () => {
-        this.setState({refreshing: false});
-      }
-    );
+    this.props.screenProps.actions.getStocks();
   }
 
   renderStocks() {

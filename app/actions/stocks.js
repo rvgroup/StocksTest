@@ -41,13 +41,15 @@ export function startAutoRefresh(callback, errorCallback) {
 
 export function getStocks(callback, errorCallback) {
     return (dispatch) => {
-        controllers.stocks.get()
-        .then(stocksData => {
-            let stocks = stocksData.stock;
+        dispatch({
+            type: types.STOCKS_BEFORE_REFRESH
+          });
 
+        controllers.stocks.get()
+        .then(resp => {
             dispatch({
                 type: types.STOCKS_REFRESH,
-                stocks: stocks
+                data: resp.stock
               });
 
             if (callback) {

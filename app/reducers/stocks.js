@@ -2,13 +2,16 @@ import * as types from '../actions/actionTypes';
 import { DeviceEventEmitter } from 'react-native';
 
 const initialState = {
-  stocks: []
+  data: []
 };
 
 export function stocks(state = initialState, action) {
   switch (action.type) {
+    case types.STOCKS_BEFORE_REFRESH:
+      DeviceEventEmitter.emit('stocksBeforeLoad');
+      return state;
+
     case types.STOCKS_REFRESH:
-    
       setTimeout(
         () => {
           DeviceEventEmitter.emit('stocksChanged');
@@ -16,7 +19,7 @@ export function stocks(state = initialState, action) {
 
       return {
         ...state,
-        stocks: action.stocks
+        data: action.data
       };
 
     default:
